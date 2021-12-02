@@ -22,7 +22,7 @@ func noerr(err error) {
 }
 
 func main() {
-	f, err := os.Open("INPUT")
+	f, err := os.Open("INPUT-TST")
 	noerr(err)
 	fmt.Println("vim-go")
 	scanner := bufio.NewScanner(f)
@@ -41,21 +41,32 @@ func main() {
 	log.Printf("with aim: a: %d, y: %d, x*y: %d", x, y, x*y)
 }
 
+func parseInt(s string) int {
+	v, err := strconv.Atoi(s)
+	noerr(err)
+	return v
+}
+
+func startsWith(line, pref string) (int, bool) {
+	if strings.HasPrefix(line, pref) {
+		v, err := strconv.Atoi(line[len(pref):])
+		noerr(err)
+		return v, true
+	}
+	return 0, false
+}
+
 func computeTravel(lines []string) (int, int) {
 	x, y := 0, 0
 	for _, line := range lines {
-		if strings.HasPrefix(line, UP) {
-			dy, err := strconv.Atoi(line[len(UP):])
-			noerr(err)
+		if dy, ok := startsWith(line, UP); ok {
 			y -= dy
-		} else if strings.HasPrefix(line, DOWN) {
-			dy, err := strconv.Atoi(line[len(DOWN):])
-			noerr(err)
+		} else if dy, ok := startsWith(line, DOWN); ok {
 			y += dy
-		} else if strings.HasPrefix(line, FORWARD) {
-			dx, err := strconv.Atoi(line[len(FORWARD):])
-			noerr(err)
+		} else if dx, ok := startsWith(line, FORWARD); ok {
 			x += dx
+		} else {
+			panic(fmt.Sprintf("unknown move: %s", line))
 		}
 	}
 	return x, y
@@ -64,19 +75,15 @@ func computeTravel(lines []string) (int, int) {
 func computeWithAim(lines []string) (int, int) {
 	h, d, a := 0, 0, 0
 	for _, line := range lines {
-		if strings.HasPrefix(line, UP) {
-			da, err := strconv.Atoi(line[len(UP):])
-			noerr(err)
+		if da, ok := startsWith(line, UP); ok {
 			a -= da
-		} else if strings.HasPrefix(line, DOWN) {
-			da, err := strconv.Atoi(line[len(DOWN):])
-			noerr(err)
+		} else if da, ok := startsWith(line, DOWN); ok {
 			a += da
-		} else if strings.HasPrefix(line, FORWARD) {
-			dh, err := strconv.Atoi(line[len(FORWARD):])
-			noerr(err)
+		} else if dh, ok := startsWith(line, FORWARD); ok {
 			h += dh
 			d += a * dh
+		} else {
+			panic(fmt.Sprintf("unknown move: %s", line))
 		}
 	}
 	return h, d
