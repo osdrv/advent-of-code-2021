@@ -12,6 +12,7 @@ mkdir "${daydir}";
 
 cp main.go.tmpl "${daydir}/main.go";
 cp common.go.tmpl "${daydir}/common.go";
+cp Makefile.tmpl "${daydir}/Makefile";
 
 touch "${daydir}/INPUT";
 
