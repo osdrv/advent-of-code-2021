@@ -19,3 +19,8 @@ touch "${daydir}/INPUT";
 touch "${daydir}/INPUT-TST";
 
 echo "new day folder created: ${daydir}";
+
+cd "${daydir}"
+
+go mod init
+go mod tidy
